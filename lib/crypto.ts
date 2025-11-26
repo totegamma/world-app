@@ -1,3 +1,4 @@
+import 'react-native-get-random-values'
 import { ec as Ec } from 'elliptic'
 import { LangJa } from './lang-ja'
 import { LangEn, Mnemonic, randomBytes, HDNodeWallet, keccak256 } from 'ethers'
@@ -96,8 +97,6 @@ const computeCCID = (publickey: string): string => {
     let address = toBech32('con', rawSecp256k1PubkeyToRawAddress(compressedPubkey))
     return address
 }
-
-
 
 const mnemonic_ja2en = (mnemonic_ja: string): string | null => {
     try {
