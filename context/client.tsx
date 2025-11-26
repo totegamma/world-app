@@ -1,10 +1,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from "react";
 import { GenerateIdentity, Identity } from '../lib/crypto';
 import { Text } from "react-native";
+import { affiliate } from "../lib/client";
 
 
 type ClientContextValue = {
-    ccid: string
+    identity?: Identity,
+    register?: () => void,
     updateIdentity?: () => void
 };
 
@@ -27,10 +29,16 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
         updateIdentity();
     }, []);
 
+    const register = useCallback(() => {
+        if (!identity) return;
+        affiliate(identity, 'cc2.tunnel.anthrotech.dev');
+    }, [identity]);
+
     const value = useMemo(() => ({
-        ccid: identity?.CCID ?? '',
+        identity,
+        register,
         updateIdentity
-    }), [identity, updateIdentity]);
+    }), [identity, updateIdentity, register]);
 
     if (!identity) {
         return <Text>Loading...</Text>;

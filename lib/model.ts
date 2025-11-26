@@ -1,7 +1,7 @@
 
 export interface Document<T> {
     key?: string
-    contentType: string
+    contentType?: string
     schema: string
     value: T
     author: string
@@ -17,5 +17,9 @@ export interface Proof {
 export interface SignedDocument {
     "document": string
     "proof": Proof
+}
+
+export interface Affiliation {
+    "domain": string
 }
 

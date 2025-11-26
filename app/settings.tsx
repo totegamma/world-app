@@ -7,7 +7,7 @@ export default function Tab() {
 
     return (
         <View style={styles.container}>
-            <Text>Your CCID: {client.ccid}</Text>
+            <Text>Your CCID: {client.identity?.CCID}</Text>
             <Button title="Refresh CCID" onPress={() => client.updateIdentity?.()} />
         </View>
   );
