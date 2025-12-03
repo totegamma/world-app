@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from "react";
 import { GenerateIdentity, Identity } from '../lib/crypto';
 import { Text } from "react-native";
-import { affiliate } from "../lib/client";
+import { affiliate, commit, getResource, NotFoundError } from "../lib/client";
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from "react-native";
 
 
 type ClientContextValue = {
@@ -23,18 +24,60 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
 
     useEffect(() => {
         let init = async () => {
-            let result = await SecureStore.getItemAsync("subkey");
-            if (result) {
-                let parsed: Identity = JSON.parse(result);
-                setIdentity(parsed);
-            } else {
-                let newIdentity = GenerateIdentity();
-                setIdentity(newIdentity);
-                await SecureStore.setItemAsync("subkey", JSON.stringify(newIdentity));
+            if (Platform.OS !== 'web') { // expo
+                let result = await SecureStore.getItemAsync("subkey");
+                if (result) {
+                    let parsed: Identity = JSON.parse(result);
+                    setIdentity(parsed);
+                } else {
+                    let newIdentity = GenerateIdentity();
+                    setIdentity(newIdentity);
+                    await SecureStore.setItemAsync("subkey", JSON.stringify(newIdentity));
+                }
+            } else { // web
+                let result = localStorage.getItem("subkey");
+                if (result) {
+                    let parsed: Identity = JSON.parse(result);
+                    setIdentity(parsed);
+                } else {
+                    let newIdentity = GenerateIdentity();
+                    setIdentity(newIdentity);
+                    localStorage.setItem("subkey", JSON.stringify(newIdentity));
+                }
             }
         };
         init();
     }, []);
+
+    useEffect(() => {
+        if (!identity) return;
+
+        let check = async () => {
+            let timeline = await getResource('cc2.tunnel.anthrotech.dev', `cc://${identity.CCID}/world.concrnt.t-home`).catch((err) => {
+                if (err instanceof NotFoundError) {
+
+                    const document = {
+                        key: "world.concrnt.t-home",
+                        author: identity.CCID,
+                        schema: "https://schema.concrnt.world/t/empty.json",
+                        contentType: "application/chunkline+json",
+                        value: {},
+                        createdAt: new Date(),
+                    }
+
+                    commit('cc2.tunnel.anthrotech.dev', identity, document);
+
+                } else {
+                    console.error("Error fetching timeline:", err);
+                    return null;
+                }
+
+            })
+            console.log("Fetched timeline:", timeline);
+        }
+
+        check();
+    }, [identity]);
 
     const register = useCallback(() => {
         if (!identity) return;
@@ -42,9 +85,14 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
     }, [identity]);
 
     const logout = useCallback(async () => {
-        SecureStore.deleteItemAsync("subkey").then(() => {
+        if (Platform.OS !== 'web') {
+            SecureStore.deleteItemAsync("subkey").then(() => {
+                setIdentity(undefined);
+            })
+        } else {
+            localStorage.removeItem("subkey");
             setIdentity(undefined);
-        })
+        }
     }, []);
 
     const value = useMemo(() => ({

@@ -1,6 +1,35 @@
 import { Document, Affiliation } from "./model";
 import { Identity, Sign } from "./crypto";
 
+export class NotFoundError extends Error {
+  constructor(message = "Not found") {
+    super(message);
+    this.name = "NotFoundError";
+  }
+}
+
+export const getResource = async (server: string, uri: string) => {
+    const fetchURL = `https://${server}/resource/${encodeURIComponent(uri)}`;
+
+    return fetch(fetchURL)
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new NotFoundError(`Resource not found: ${uri}`);
+                }
+                throw new Error(`Server responded with ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            return data as Document<any>;
+        })
+        .catch(error => {
+            console.error("Error fetching resource:", error);
+            throw error;
+        });
+};
+
 
 export const commit = async (server: string, identity: Identity, document: Document<any>) => {
 
