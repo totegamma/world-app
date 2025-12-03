@@ -16,8 +16,6 @@ export default function Tab() {
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
                 <Text>CCID: {client.identity?.CCID}</Text>
-                <Text>Registration</Text>
-                <Button title="register" onPress={() => client.register?.()} />
 
                 <Pressable
                     onPress={() => setOpenComposer(true)}

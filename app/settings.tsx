@@ -1,22 +1,29 @@
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { Text, StyleSheet, Button } from 'react-native';
 import { useClient } from '../context/client';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Tab() {
 
     const client = useClient();
 
     return (
-        <View style={styles.container}>
-            <Text>Your CCID: {client.identity?.CCID}</Text>
-            <Button title="Refresh CCID" onPress={() => client.updateIdentity?.()} />
-        </View>
+        <SafeAreaProvider>
+            <SafeAreaView style={styles.container}>
+                <Text>Your CCID: {client.identity?.CCID}</Text>
+                <Text>Registration</Text>
+                <Button title="register" onPress={() => client.register?.()} />
+                <Button title="Logout" onPress={() => client.logout?.()} />
+            </SafeAreaView>
+        </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    container: {
+        flex: 1,
+        padding: 20,
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+        gap: 10,
+    },
 });

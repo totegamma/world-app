@@ -2,12 +2,13 @@ import { createContext, useContext, useState, useEffect, ReactNode, useCallback,
 import { GenerateIdentity, Identity } from '../lib/crypto';
 import { Text } from "react-native";
 import { affiliate } from "../lib/client";
+import * as SecureStore from 'expo-secure-store';
 
 
 type ClientContextValue = {
     identity?: Identity,
     register?: () => void,
-    updateIdentity?: () => void
+    logout?: () => void,
 };
 
 const ClientContext = createContext<ClientContextValue | undefined>(undefined);
@@ -20,13 +21,19 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
 
     const [identity, setIdentity] = useState<Identity>();
 
-    const updateIdentity = useCallback(() => {
-        setIdentity(GenerateIdentity());
-    }, []);
-
-
     useEffect(() => {
-        updateIdentity();
+        let init = async () => {
+            let result = await SecureStore.getItemAsync("subkey");
+            if (result) {
+                let parsed: Identity = JSON.parse(result);
+                setIdentity(parsed);
+            } else {
+                let newIdentity = GenerateIdentity();
+                setIdentity(newIdentity);
+                await SecureStore.setItemAsync("subkey", JSON.stringify(newIdentity));
+            }
+        };
+        init();
     }, []);
 
     const register = useCallback(() => {
@@ -34,11 +41,17 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
         affiliate(identity, 'cc2.tunnel.anthrotech.dev');
     }, [identity]);
 
+    const logout = useCallback(async () => {
+        SecureStore.deleteItemAsync("subkey").then(() => {
+            setIdentity(undefined);
+        })
+    }, []);
+
     const value = useMemo(() => ({
         identity,
         register,
-        updateIdentity
-    }), [identity, updateIdentity, register]);
+        logout
+    }), [identity, register, logout]);
 
     if (!identity) {
         return <Text>Loading...</Text>;
