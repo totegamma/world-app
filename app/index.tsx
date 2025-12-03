@@ -64,9 +64,15 @@ export default function Tab() {
                                             "body": draft
                                         },
                                         author: client.identity.CCID,
+                                        memberOf: [
+                                            `cc://${client.identity.CCID}/world.concrnt.t-home`,
+                                        ],
                                         createdAt: new Date(),
                                     };
-                                    commit('cc2.tunnel.anthrotech.dev', client.identity, document)
+                                    commit('cc2.tunnel.anthrotech.dev', client.identity, document).then(() => {
+                                        setDraft("");
+                                        setOpenComposer(false);
+                                    })
                                 }}
                             />
                         </View>
