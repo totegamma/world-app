@@ -12,6 +12,7 @@
     "@cosmjs/amino": "^0.37.0",
     "@cosmjs/crypto": "^0.37.0",
     "@cosmjs/encoding": "^0.37.0",
+    "@expo/vector-icons": "^15.0.3",
     "elliptic": "^6.6.1",
     "ethers": "^6.15.0",
     "expo": "~54.0.25",
