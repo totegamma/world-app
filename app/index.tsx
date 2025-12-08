@@ -1,9 +1,9 @@
 import { Text, StyleSheet, Button, TextInput, Modal, View, KeyboardAvoidingView, Pressable } from 'react-native';
 import { useClient } from '../context/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { commit } from '../lib/client';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { ChunklineItem } from '@concrnt/client';
 
 export default function Tab() {
 
@@ -12,9 +12,32 @@ export default function Tab() {
 
     const [openComposer, setOpenComposer] = useState<boolean>(false);
 
+    const [posts, setPosts] = useState<ChunklineItem[]>([]);
+
+    const fetchPosts = async () => {
+        const response = await fetch(`http://cc2.tunnel.anthrotech.dev/api/v1/timeline/recent?uris=cc://${client.ccid}/world.concrnt.t-home`);
+        const data = await response.json();
+        console.log(data);
+        if (!data) return;
+        setPosts(data);
+    };
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
+    // http://localhost:8000/api/v1/timeline/recent?uris=cc://ariake.concrnt.net/tvtwreay639zpgjdw067y1qmj28
+
     return (
         <SafeAreaView style={styles.container}>
-            <Text>CCID: {client.identity?.CCID}</Text>
+            <Text>CCID: {client.ccid}</Text>
+
+            {posts.map((item, index) => (
+                <View key={index} style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc', width: '100%' }}>
+                    <Text>{new Date(item.timestamp).toLocaleString()}</Text>
+                    <Text>{item.href}</Text>
+                </View>
+            ))}
 
             <Pressable
                 onPress={() => setOpenComposer(true)}
@@ -57,21 +80,21 @@ export default function Tab() {
                             <Button title="Cancel" onPress={() => setOpenComposer(false)} />
                             <Button title="Post" 
                                 onPress={() => {
-                                    if (!client.identity) return;
                                     const document = {
                                         schema: "https://schema.concrnt.world/m/markdown.json",
                                         value: {
                                             "body": draft
                                         },
-                                        author: client.identity.CCID,
+                                        author: client.ccid,
                                         memberOf: [
-                                            `cc://${client.identity.CCID}/world.concrnt.t-home`,
+                                            `cc://${client.ccid}/world.concrnt.t-home`,
                                         ],
                                         createdAt: new Date(),
                                     };
-                                    commit('cc2.tunnel.anthrotech.dev', client.identity, document).then(() => {
+                                    client.api.commit(document).then(() => {
                                         setDraft("");
                                         setOpenComposer(false);
+                                        fetchPosts();
                                     })
                                 }}
                             />
