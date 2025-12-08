@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ChunklineItem } from '@concrnt/client';
+import { MessageCell } from '../components/message';
 
 export default function Tab() {
 
@@ -26,17 +27,12 @@ export default function Tab() {
         fetchPosts();
     }, []);
 
-    // http://localhost:8000/api/v1/timeline/recent?uris=cc://ariake.concrnt.net/tvtwreay639zpgjdw067y1qmj28
-
     return (
         <SafeAreaView style={styles.container}>
             <Text>CCID: {client.ccid}</Text>
 
             {posts.map((item, index) => (
-                <View key={index} style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc', width: '100%' }}>
-                    <Text>{new Date(item.timestamp).toLocaleString()}</Text>
-                    <Text>{item.href}</Text>
-                </View>
+                <MessageCell key={index} uri={item.href} />
             ))}
 
             <Pressable
