@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Button, TextInput, Modal, View, KeyboardAvoidingView, Pressable } from 'react-native';
+import { StyleSheet, Button, TextInput, Modal, View, KeyboardAvoidingView, Pressable } from 'react-native';
 import { useClient } from '../context/client';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,11 +16,15 @@ export default function Tab() {
     const [posts, setPosts] = useState<ChunklineItem[]>([]);
 
     const fetchPosts = async () => {
-        const response = await fetch(`http://cc2.tunnel.anthrotech.dev/api/v1/timeline/recent?uris=cc://${client.ccid}/world.concrnt.t-home`);
-        const data = await response.json();
-        console.log(data);
-        if (!data) return;
-        setPosts(data);
+        fetch(`http://cc2.tunnel.anthrotech.dev/api/v1/timeline/recent?uris=cc://${client.ccid}/world.concrnt.t-home`).then((response) => {
+            response.json().then((data) => {
+                console.log(data);
+                if (!data) return;
+                setPosts(data);
+            })
+        }).catch((error) => {
+            console.error("Failed to fetch posts:", error);
+        });
     };
 
     useEffect(() => {
@@ -29,7 +33,6 @@ export default function Tab() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text>CCID: {client.ccid}</Text>
 
             {posts.map((item, index) => (
                 <MessageCell key={index} uri={item.href} />

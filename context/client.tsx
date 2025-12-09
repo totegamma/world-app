@@ -1,8 +1,9 @@
+import 'react-native-get-random-values'
 import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 import { Text } from "react-native";
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from "react-native";
-import { Api, GenerateIdentity, Identity, InMemoryKVS, MasterKeyAuthProvider } from '@concrnt/client';
+import { Api, GenerateIdentity, Identity, InMemoryKVS, MasterKeyAuthProvider, NotFoundError } from '@concrnt/client';
 
 
 type ClientContextValue = {
@@ -18,6 +19,8 @@ type ClientProviderProps = {
 };
 
 const host = 'cc2.tunnel.anthrotech.dev';
+
+class Empty {}
 
 export const ClientProvider = (props: ClientProviderProps): ReactNode => {
 
@@ -58,6 +61,33 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
         init();
 
     }, []);
+
+    useEffect(() => {
+        if (!api) return;
+
+        let check = async () => {
+            let timeline = await api.getResource(Empty, `cc://${api.authProvider.getCCID()}/world.concrnt.t-home`).catch((err) => {
+                if (err instanceof NotFoundError) {
+                    const document = {
+                        key: "world.concrnt.t-home",
+                        author: api.authProvider.getCCID(),
+                        schema: "https://schema.concrnt.world/t/empty.json",
+                        contentType: "application/chunkline+json",
+                        value: {},
+                        createdAt: new Date(),
+                    }
+                    api.commit(document);
+                } else {
+                    console.error("Error fetching timeline:", err);
+                    return null;
+                }
+
+            })
+            console.log("Fetched timeline:", timeline);
+        }
+
+        check();
+    }, [api]);
 
     const value = useMemo(() => ({
         api: api!,

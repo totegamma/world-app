@@ -590,7 +590,7 @@ packages:
     engines: {node: '>=6.9.0'}
 
   '@concrnt/client@file:../concrnt-node-client/concrnt-client-0.0.24.tgz':
-    resolution: {integrity: sha512-ZJKctwiqDUfU/BlQu2YeOJnvpHsO/Tz0OXoPUf1VyID3jaZTU/3rYgRz08EkDGLUx4EpNzi9jSnwgSi52rbrdQ==, tarball: file:../concrnt-node-client/concrnt-client-0.0.24.tgz}
+    resolution: {integrity: sha512-nUmjTN4aTsXmtzbDzDIB8zlRcS+eJ3ttgf53o5yS7FX+x1qaScx81ZpjolUGg6IaQDMXkTF9rdkPMkgQPn4YEQ==, tarball: file:../concrnt-node-client/concrnt-client-0.0.24.tgz}
     version: 0.0.24
 
   '@cosmjs/amino@0.33.1':
