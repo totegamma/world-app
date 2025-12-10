@@ -1,10 +1,10 @@
 import { StyleSheet, Button, TextInput, Modal, View, KeyboardAvoidingView, Pressable } from 'react-native';
-import { useClient } from '../context/client';
+import { useClient } from '../../context/client';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { ChunklineItem } from '@concrnt/client';
-import { MessageCell } from '../components/message';
+import { ChunklineItem } from '@concrnt/clientv2';
+import { MessageCell } from '../../components/message';
 
 export default function Tab() {
 
@@ -19,7 +19,7 @@ export default function Tab() {
         fetch(`http://cc2.tunnel.anthrotech.dev/api/v1/timeline/recent?uris=cc://${client.ccid}/world.concrnt.t-home`).then((response) => {
             response.json().then((data) => {
                 console.log(data);
-                if (!data) return;
+                if (!data || !Array.isArray(data)) return
                 setPosts(data);
             })
         }).catch((error) => {

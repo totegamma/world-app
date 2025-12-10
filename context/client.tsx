@@ -1,15 +1,16 @@
 import 'react-native-get-random-values'
 import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
-import { Text } from "react-native";
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from "react-native";
-import { Api, GenerateIdentity, Identity, InMemoryKVS, MasterKeyAuthProvider, NotFoundError } from '@concrnt/client';
+import { Api, GenerateIdentity, Identity, InMemoryKVS, MasterKeyAuthProvider } from '@concrnt/clientv2';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 type ClientContextValue = {
     ccid: string;
-    domain: string;
+    host: string | undefined;
     api: Api,
+    initializing: boolean;
 };
 
 const ClientContext = createContext<ClientContextValue | undefined>(undefined);
@@ -18,35 +19,52 @@ type ClientProviderProps = {
     children: ReactNode;
 };
 
-const host = 'cc2.tunnel.anthrotech.dev';
-
 class Empty {}
 
 export const ClientProvider = (props: ClientProviderProps): ReactNode => {
 
+    const [initializing, setInitializing] = useState<boolean>(true);
+    const [host, setHost] = useState<string>();
     const [api, setApi] = useState<Api | undefined>(undefined);
 
     useEffect(() => {
+        let unmounted = false;
+        AsyncStorage.getItem('host').then((storedHost) => {
+            if (unmounted) return;
+            if (storedHost){
+                setHost(storedHost);
+            } else {
+                setInitializing(false);
+            }
+        })
+        return () => {
+            unmounted = true;
+        }
+    }, []);
+
+    useEffect(() => {
+
+        if (!host) return;
         let init = async () => {
             let identity: Identity
             if (Platform.OS !== 'web') { // expo
-                let result = await SecureStore.getItemAsync("subkey");
+                let result = await SecureStore.getItemAsync("identity");
                 if (result) {
                     let parsed: Identity = JSON.parse(result);
                     identity = parsed;
                 } else {
                     let newIdentity = GenerateIdentity();
-                    await SecureStore.setItemAsync("subkey", JSON.stringify(newIdentity));
+                    await SecureStore.setItemAsync("identity", JSON.stringify(newIdentity));
                     identity = newIdentity;
                 }
             } else { // web
-                let result = localStorage.getItem("subkey");
+                let result = localStorage.getItem("identity");
                 if (result) {
                     let parsed: Identity = JSON.parse(result);
                     identity = parsed;
                 } else {
                     let newIdentity = GenerateIdentity();
-                    localStorage.setItem("subkey", JSON.stringify(newIdentity));
+                    localStorage.setItem("identity", JSON.stringify(newIdentity));
                     identity = newIdentity;
                 }
             }
@@ -56,33 +74,37 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
 
             const api = new Api(authProvider, cacheEngine)
             setApi(api);
+            setInitializing(false);
 
         };
         init();
 
-    }, []);
+    }, [host]);
 
     useEffect(() => {
         if (!api) return;
 
         let check = async () => {
-            let timeline = await api.getResource(Empty, `cc://${api.authProvider.getCCID()}/world.concrnt.t-home`).catch((err) => {
-                if (err instanceof NotFoundError) {
-                    const document = {
-                        key: "world.concrnt.t-home",
-                        author: api.authProvider.getCCID(),
-                        schema: "https://schema.concrnt.world/t/empty.json",
-                        contentType: "application/chunkline+json",
-                        value: {},
-                        createdAt: new Date(),
+            let timeline = await api.getResource(Empty, `cc://${api.authProvider.getCCID()}/world.concrnt.t-home`)
+                .then((res) => {
+                    if (res === null) {
+                        const document = {
+                            key: "world.concrnt.t-home",
+                            author: api.authProvider.getCCID(),
+                            schema: "https://schema.concrnt.world/t/empty.json",
+                            contentType: "application/chunkline+json",
+                            value: {},
+                            createdAt: new Date(),
+                        }
+                        api.commit(document);
+                        return document;
                     }
-                    api.commit(document);
-                } else {
+                    return res;
+                })
+                .catch((err) => {
                     console.error("Error fetching timeline:", err);
                     return null;
-                }
-
-            })
+                })
             console.log("Fetched timeline:", timeline);
         }
 
@@ -92,12 +114,9 @@ export const ClientProvider = (props: ClientProviderProps): ReactNode => {
     const value = useMemo(() => ({
         api: api!,
         ccid: api?.authProvider.getCCID()!,
-        domain: host,
-    }), [api]);
-
-    if (!api) {
-        return <Text>Loading...</Text>;
-    }
+        host,
+        initializing,
+    }), [api, host, initializing]);
 
     return (
         <ClientContext.Provider value={value}>

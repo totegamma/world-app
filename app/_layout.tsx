@@ -1,22 +1,44 @@
-import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
-import { ClientProvider } from '../context/client';
+import { Redirect, Slot, useSegments } from 'expo-router';
+import { Text } from 'react-native';
+import { ClientProvider, useClient } from '../context/client';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-export default function TabLayout() {
+
+
+function RootNavigation() {
+
+    console.log("RootNavigation rendered");
+
+    const client = useClient();
+    const segments = useSegments();
+
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inAppGroup = segments[0] === '(app)';
+
+    if (client.initializing) {
+        return <Text>oOoOoOoOoOoOoOo</Text>;
+    } 
+
+    if (!client.host && !inAuthGroup) {
+        return <Redirect href="/welcome" />;
+    }
+
+    if (client.host && !inAppGroup) {
+        return <Redirect href="/" />;
+    }
+
+    return <Slot />;
+}
+
+
+export default function RootLayout() {
     return (
         <ClientProvider>
             <SafeAreaProvider>
-                <NativeTabs>
-                    <NativeTabs.Trigger name="index">
-                        <Label>Home</Label>
-                        <Icon sf="house.fill" drawable="custom_android_drawable" />
-                    </NativeTabs.Trigger>
-                    <NativeTabs.Trigger name="settings">
-                        <Icon sf="gear" drawable="custom_settings_drawable" />
-                        <Label>Settings</Label>
-                    </NativeTabs.Trigger>
-                </NativeTabs>
+                <RootNavigation />
             </SafeAreaProvider>
         </ClientProvider>
-    );
+    )
 }
+

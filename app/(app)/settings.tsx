@@ -1,5 +1,5 @@
 import { Text, StyleSheet, Button, View, TextInput } from 'react-native';
-import { useClient } from '../context/client';
+import { useClient } from '../../context/client';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 
