@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@concrnt/clientv2':
-        specifier: ^0.0.0
-        version: 0.0.0
       '@cosmjs/amino':
         specifier: ^0.37.0
         version: 0.37.0
@@ -81,6 +78,9 @@ importers:
       '@types/react':
         specifier: ~19.1.0
         version: 19.1.17
+      '@types/uuid':
+        specifier: ^11.0.0
+        version: 11.0.0
       typescript:
         specifier: ~5.9.2
         version: 5.9.3
@@ -595,36 +595,17 @@ packages:
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
 
-  '@concrnt/clientv2@0.0.0':
-    resolution: {integrity: sha512-U0ECO0iJPaVj82KjKDNkkfykvkHZjW9YoXAzFO6SnC6pxxPfCtOmASDHV2tEMnHzYe243TDppg/iLNcCnDlC8A==}
-
-  '@cosmjs/amino@0.33.1':
-    resolution: {integrity: sha512-WfWiBf2EbIWpwKG9AOcsIIkR717SY+JdlXM/SL/bI66BdrhniAF+/ZNis9Vo9HF6lP2UU5XrSmFA4snAvEgdrg==}
-
   '@cosmjs/amino@0.37.0':
     resolution: {integrity: sha512-Qjg3vx0V907ICYr9wTFuF55+P2F7FuVuVdV8WsBJC6G9ekS5nbi7Z4+YsoJf3JEp5WApVgcX3HmAWZhziayxzw==}
-
-  '@cosmjs/crypto@0.33.1':
-    resolution: {integrity: sha512-U4kGIj/SNBzlb2FGgA0sMR0MapVgJUg8N+oIAiN5+vl4GZ3aefmoL1RDyTrFS/7HrB+M+MtHsxC0tvEu4ic/zA==}
-    deprecated: This uses elliptic for cryptographic operations, which contains several security-relevant bugs. To what degree this affects your application is something you need to carefully investigate. See https://github.com/cosmos/cosmjs/issues/1708 for further pointers. Starting with version 0.34.0 the cryptographic library has been replaced. However, private keys might still be at risk.
 
   '@cosmjs/crypto@0.37.0':
     resolution: {integrity: sha512-rjnU7SEgNTUQAUotG686m7ahYSWgHh3J6n2JXoWoHJz0uVv4o4P+pbAFklyQ1PcPIR7u6LezCKDB5tP5Y5PeYQ==}
 
-  '@cosmjs/encoding@0.33.1':
-    resolution: {integrity: sha512-nuNxf29fUcQE14+1p//VVQDwd1iau5lhaW/7uMz7V2AH3GJbFJoJVaKvVyZvdFk+Cnu+s3wCqgq4gJkhRCJfKw==}
-
   '@cosmjs/encoding@0.37.0':
     resolution: {integrity: sha512-xtdC0w+iVFOrod9a5RLJULUECv+6AvZr5FkD8AFr2vD853n7Z89/AVuEiJzd4GdUwlPzxcaamhAtmI+IB9DYvg==}
 
-  '@cosmjs/math@0.33.1':
-    resolution: {integrity: sha512-ytGkWdKFCPiiBU5eqjHNd59djPpIsOjbr2CkNjlnI1Zmdj+HDkSoD9MUGpz9/RJvRir5IvsXqdE05x8EtoQkJA==}
-
   '@cosmjs/math@0.37.0':
     resolution: {integrity: sha512-FI+Tq8mhW0tuDawRvPdyX3K7qDZD2v1keRhiK/zHisvtQVzqoRRoOS1g5P9Pc7gWLQ1jPS15gDMYBu5+UYJ1+g==}
-
-  '@cosmjs/utils@0.33.1':
-    resolution: {integrity: sha512-UnLHDY6KMmC+UXf3Ufyh+onE19xzEXjT4VZ504Acmk4PXxqyvG4cCPprlKUFnGUX7f0z8Or9MAOHXBx41uHBcg==}
 
   '@cosmjs/utils@0.37.0':
     resolution: {integrity: sha512-j46yZg+cLBpANGc5sCxtQHJgPGBt5zSKlU+KX9FlDS6JU6q2vZYCpKgucFFpjekEiMagU1eu8cDSCRjTthEM6w==}
@@ -1258,6 +1239,10 @@ packages:
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
 
+  '@types/uuid@11.0.0':
+    resolution: {integrity: sha512-HVyk8nj2m+jcFRNazzqyVKiZezyhDKrGUA3jlEcg/nZ6Ms+qHwocba1Y/AaVaznJTAM9xpdFSh+ptbNrhOGvZA==}
+    deprecated: This is a stub types definition. uuid provides its own type definitions, so you do not need this installed.
+
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
 
@@ -1437,9 +1422,6 @@ packages:
     resolution: {integrity: sha512-a28v2eWrrRWPpJSzxc+mKwm0ZtVx/G8SepdQZDArnXYU/XS+IF6mp8aB/4E+hH1tyGCoDo3KlUCdlSxGDsRkAw==}
     hasBin: true
 
-  bech32@1.1.4:
-    resolution: {integrity: sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==}
-
   better-opn@3.0.2:
     resolution: {integrity: sha512-aVNobHnJqLiUelTaHat9DZ1qM2w0C0Eym4LPI/3JxOnSokGVdsl1T1kN7TFvsEAD8G47A6VKQ0TVHqbBnYMJlQ==}
     engines: {node: '>=12.0.0'}
@@ -1450,9 +1432,6 @@ packages:
 
   bn.js@4.12.2:
     resolution: {integrity: sha512-n4DSx829VRTRByMRGdjQ9iqsN0Bh4OolPsFnaZBLcbi8iXcB+kJ9s7EnRt4wILZNV3kPLHkRVfOc/HvhC3ovDw==}
-
-  bn.js@5.2.2:
-    resolution: {integrity: sha512-v2YAxEmKaBLahNwE1mjp4WON6huMNeuDvagFZW+ASCuA/ku0bXR9hSMw0XpiqMoA3+rmnyck/tPRSFQkoC9Cuw==}
 
   bplist-creator@0.1.0:
     resolution: {integrity: sha512-sXaHZicyEEmY86WyueLTQesbeoH/mquvarJaQNbjuOQO+7gbFcDEWqKmcWA4cOTLzFlfgvkiVxolk1k5bBIpmg==}
@@ -2232,12 +2211,6 @@ packages:
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
-
-  libsodium-sumo@0.7.15:
-    resolution: {integrity: sha512-5tPmqPmq8T8Nikpm1Nqj0hBHvsLFCXvdhBFV7SGOitQPZAA6jso8XoL0r4L7vmfKXr486fiQInvErHtEvizFMw==}
-
-  libsodium-wrappers-sumo@0.7.15:
-    resolution: {integrity: sha512-aSWY8wKDZh5TC7rMvEdTHoyppVq/1dTSAeAR7H6pzd6QRT3vQWcT5pGwCotLcpPEOLXX6VvqihSPkpEhYAjANA==}
 
   lighthouse-logger@1.4.2:
     resolution: {integrity: sha512-gPWxznF6TKmUHrOQjlVo2UbaL2EJ71mb2CCeRs/2qBpi4L/g4LUVc9+3lKQ6DTUZwJswfM7ainGrLO1+fOqa2g==}
@@ -3294,10 +3267,6 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
-    hasBin: true
-
   uuid@7.0.3:
     resolution: {integrity: sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==}
     hasBin: true
@@ -4078,41 +4047,12 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@concrnt/clientv2@0.0.0':
-    dependencies:
-      '@cosmjs/amino': 0.33.1
-      '@cosmjs/crypto': 0.33.1
-      '@cosmjs/encoding': 0.33.1
-      elliptic: 6.6.1
-      ethers: 6.15.0
-      uuid: 11.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@cosmjs/amino@0.33.1':
-    dependencies:
-      '@cosmjs/crypto': 0.33.1
-      '@cosmjs/encoding': 0.33.1
-      '@cosmjs/math': 0.33.1
-      '@cosmjs/utils': 0.33.1
-
   '@cosmjs/amino@0.37.0':
     dependencies:
       '@cosmjs/crypto': 0.37.0
       '@cosmjs/encoding': 0.37.0
       '@cosmjs/math': 0.37.0
       '@cosmjs/utils': 0.37.0
-
-  '@cosmjs/crypto@0.33.1':
-    dependencies:
-      '@cosmjs/encoding': 0.33.1
-      '@cosmjs/math': 0.33.1
-      '@cosmjs/utils': 0.33.1
-      '@noble/hashes': 1.8.0
-      bn.js: 5.2.2
-      elliptic: 6.6.1
-      libsodium-wrappers-sumo: 0.7.15
 
   '@cosmjs/crypto@0.37.0':
     dependencies:
@@ -4125,25 +4065,13 @@ snapshots:
       '@scure/bip39': 1.6.0
       hash-wasm: 4.12.0
 
-  '@cosmjs/encoding@0.33.1':
-    dependencies:
-      base64-js: 1.5.1
-      bech32: 1.1.4
-      readonly-date: 1.0.0
-
   '@cosmjs/encoding@0.37.0':
     dependencies:
       '@scure/base': 2.0.0
       base64-js: 1.5.1
       readonly-date: 1.0.0
 
-  '@cosmjs/math@0.33.1':
-    dependencies:
-      bn.js: 5.2.2
-
   '@cosmjs/math@0.37.0': {}
-
-  '@cosmjs/utils@0.33.1': {}
 
   '@cosmjs/utils@0.37.0': {}
 
@@ -5079,6 +5007,10 @@ snapshots:
 
   '@types/stack-utils@2.0.3': {}
 
+  '@types/uuid@11.0.0':
+    dependencies:
+      uuid: 7.0.3
+
   '@types/yargs-parser@21.0.3': {}
 
   '@types/yargs@17.0.35':
@@ -5303,8 +5235,6 @@ snapshots:
 
   baseline-browser-mapping@2.8.31: {}
 
-  bech32@1.1.4: {}
-
   better-opn@3.0.2:
     dependencies:
       open: 8.4.2
@@ -5312,8 +5242,6 @@ snapshots:
   big-integer@1.6.52: {}
 
   bn.js@4.12.2: {}
-
-  bn.js@5.2.2: {}
 
   bplist-creator@0.1.0:
     dependencies:
@@ -6133,12 +6061,6 @@ snapshots:
   lan-network@0.1.7: {}
 
   leven@3.1.0: {}
-
-  libsodium-sumo@0.7.15: {}
-
-  libsodium-wrappers-sumo@0.7.15:
-    dependencies:
-      libsodium-sumo: 0.7.15
 
   lighthouse-logger@1.4.2:
     dependencies:
@@ -7363,8 +7285,6 @@ snapshots:
       react: 19.1.0
 
   utils-merge@1.0.1: {}
-
-  uuid@11.1.0: {}
 
   uuid@7.0.3: {}
 

@@ -1,4 +1,4 @@
-import { Api, GenerateIdentity, InMemoryKVS, MasterKeyAuthProvider } from '@concrnt/clientv2';
+import { Api, GenerateIdentity, InMemoryKVS, MasterKeyAuthProvider } from '../../lib';
 import { Text, StyleSheet, Platform, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store';

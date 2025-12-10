@@ -1,8 +1,7 @@
-import 'react-native-get-random-values'
 import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from "react-native";
-import { Api, GenerateIdentity, Identity, InMemoryKVS, MasterKeyAuthProvider } from '@concrnt/clientv2';
+import { Api, GenerateIdentity, Identity, InMemoryKVS, MasterKeyAuthProvider } from '../lib';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
