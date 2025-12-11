@@ -3,7 +3,7 @@ import { useClient } from '../../context/client';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { ChunklineItem } from '@concrnt/clientv2';
+import type { ChunklineItem } from '../../lib';
 import { MessageCell } from '../../components/message';
 
 export default function Tab() {
@@ -18,7 +18,6 @@ export default function Tab() {
     const fetchPosts = async () => {
         fetch(`http://cc2.tunnel.anthrotech.dev/api/v1/timeline/recent?uris=cc://${client.ccid}/world.concrnt.t-home`).then((response) => {
             response.json().then((data) => {
-                console.log(data);
                 if (!data || !Array.isArray(data)) return
                 setPosts(data);
             })
