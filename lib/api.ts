@@ -355,7 +355,7 @@ export class Api {
 
         const server = await this.getServer(fqdn)
 
-        let endpoint = server.endpoints['net.concrnt.core.resource']
+        let endpoint = server.endpoints['net.concrnt.core.resource'].template
             .replaceAll('{uri}', uri)
             .replaceAll('{owner}', owner)
             .replaceAll('{key}', key)
@@ -371,16 +371,23 @@ export class Api {
         return resource
     }
 
-    async requestConcrntApi<T>(host: string, api: string, params: Record<string, string>, init?: RequestInit): Promise<T> {
+    async requestConcrntApi<T>(host: string, api: string, opts: {params?: Record<string, string>, query?: string}, init?: RequestInit): Promise<T> {
 
         const server = await this.getServer(host)
         
         let endpoint = server.endpoints[api]
-        for (const [key, value] of Object.entries(params)) {
-            endpoint = endpoint.replaceAll(`{${key}}`, value)
+        let template = endpoint.template
+        if (opts.params) {
+            for (const [key, value] of Object.entries(opts.params)) {
+                template = template.replaceAll(`{${key}}`, value)
+            }
+        }
+
+        if (opts.query) {
+            template += opts.query
         }
             
-        return this.fetchHost<T>(host, endpoint, init)
+        return this.fetchHost<T>(host, template, init)
 
     }
 
@@ -416,12 +423,18 @@ export class Api {
     }
 }
 
+export interface ConcrntApiEndpoint {
+    template: string
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+    query?: string[]
+}
+
 export class Server {
     version: string = ''
     domain: string = ''
     csid: CSID = ''
     layer: string = ''
-    endpoints: Record<string, string> = {}
+    endpoints: Record<string, ConcrntApiEndpoint> = {}
 }
 
 export class Entity {

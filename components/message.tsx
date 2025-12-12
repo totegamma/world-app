@@ -16,7 +16,7 @@ interface ProfileSchema {
     avatar: string
 }
 
-class Record<T> {
+class Document<T> {
     value: T = {} as T
 }
 
@@ -24,25 +24,44 @@ class Record<T> {
 export const MessageCell = (props: MessageCellProps) => {
 
     const client = useClient();
-    const [resource, setResource] = useState<Record<MarkdownSchema>>();
-    const [profile, setProfile] = useState<Record<ProfileSchema>>();
+    const [updator, setUpdator] = useState<number>(0);
+    const [resource, setDocument] = useState<Document<MarkdownSchema>>();
+    const [profile, setProfile] = useState<Document<ProfileSchema>>();
+    const [associationCounts, setAssociationCounts] = useState<Record<string, number>>();
 
     useEffect(() => {
-        client.api.getResource<Record<MarkdownSchema>>(Record<MarkdownSchema>, props.uri).then(res => {
-            setResource(res);
+        client.api.getResource<Document<MarkdownSchema>>(Document<MarkdownSchema>, props.uri).then(res => {
+            setDocument(res);
         })
 
         const parsed = new URL(props.uri);
         const owner = parsed.hostname;
         const profileUri = `cc://${owner}/world.concrnt.profile`;
 
-        client.api.getResource<Record<ProfileSchema>>(Record<ProfileSchema>, profileUri).then(res => {
+        client.api.getResource<Document<ProfileSchema>>(Document<ProfileSchema>, profileUri).then(res => {
             setProfile(res);
         }).catch(err => {
             console.log("Failed to load profile for ", owner, err);
         })
 
-    }, [client, props.uri]);
+        client.api.requestConcrntApi(
+            'cc2.tunnel.anthrotech.dev',
+            'net.concrnt.core.association-counts',
+            {
+                query: `?uri=${encodeURIComponent(props.uri)}`
+            },
+            {
+                method: 'GET',
+            }
+        ).then(res => {
+            console.log("Association counts", res);
+            setAssociationCounts(res as Record<string, number>);
+        }).catch(err => {
+            console.log("Failed to load association counts", err);
+        })
+
+
+    }, [client, props.uri, updator]);
 
     return (
         <View 
@@ -99,10 +118,15 @@ export const MessageCell = (props: MessageCellProps) => {
                             }
                             client.api.commit(document).then(() => {
                                 console.log("Liked!")
+                                setUpdator((prev) => prev + 1);
                             })
                         }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
                     >
                         <MaterialIcons name="star-border" size={20} color="gray" />
+                        <Text style={{ fontSize: 12, color: 'gray' }}>
+                            {associationCounts && associationCounts['https://schema.concrnt.world/a/like.json'] ? associationCounts['https://schema.concrnt.world/a/like.json'] : ' '}
+                        </Text>
                     </Pressable>
                 </View>
             </View>
